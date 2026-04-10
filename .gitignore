@@ -1,0 +1,22 @@
+*.pyc
+*.log
+node_modules
+coverage/
+analysis/logs
+analysis/export_deliverables
+analysis/cantaloupe/*
+analysis/staticfiles
+analysis/media/packages
+analysis/media/build/
+analysis/uploadedfiles/*
+analysis/settings_local.py
+webpack-stats.json
+.vscode/
+*.egg-info
+.DS_STORE
+CACHE
+frontend_configuration
+
+# Packaging
+build/
+dist/
