@@ -6,8 +6,6 @@ import AnalysisDashboard from '@/analysis/AnalysisDashboard.vue';
 export default ko.components.register('analysis', {
     viewModel: function() {
 
-        console.log("View Model");
-
         createVueApplication(AnalysisDashboard).then(vueApp => {
             vueApp.mount('#analysis-container');
         });
