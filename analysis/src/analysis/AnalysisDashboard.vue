@@ -1,9 +1,12 @@
 <script setup>
 import { ref, watch } from "vue";
+import Select from 'primevue/select';
 
 const graph_objects = ref([]);
 const concept_nodes = ref([]);
 const selectedGraphId = ref("");
+const selectedNode = ref("");
+
 
 fetch("/graphs")
     .then((response) => {
@@ -11,7 +14,6 @@ fetch("/graphs")
         return response.json();
     })
     .then((data) => {
-        console.log(data);
         graph_objects.value = data.filter(
             (graph) => graph.graphid != "ff623370-fa12-11e6-b98b-6c4008b05c4c",
         );
@@ -36,42 +38,51 @@ watch(selectedGraphId, (newGraphId) => {
 </script>
 
 <template>
-    <div>
-        <select
-            id="graph-select"
-            v-model="selectedGraphId"
-        >
-            <option
-                disabled
-                value=""
-            >
-                Choose a graph...
-            </option>
-            <option
-                v-for="graph in graph_objects"
-                :key="graph.graphid"
-                :value="graph.graphid"
-            >
-                {{ graph.name }}
-            </option>
-        </select>
-    </div>
+    <div class="analysis-dashboard">
+        <div class="control-panel">
+            <div>
+                <Select 
+                    id="graph-select"
+                    class="drop-down"
+                    v-model="selectedGraphId" 
+                    :options="graph_objects" 
+                    optionLabel="name" 
+                    optionValue="graphid" 
+                    placeholder="Choose a graph..." 
+                />
+            </div>
 
-    <div v-if="selectedGraphId">
-        <select id="node-select">
-            <option
-                v-for="node in concept_nodes"
-                :key="node.nodegroup_id"
-                :value="node.nodegroup_id"
-            >
-                {{ node.name }}
-            </option>
-        </select>
+            <div v-if="selectedGraphId">
+                <Select 
+                    id="node-select"
+                    class="drop-down"
+                    v-model="selectedNode" 
+                    :options="concept_nodes" 
+                    optionLabel="name" 
+                    optionValue="nodegroup_id" 
+                    placeholder="Choose a node..." 
+                />
+            </div>
+        </div>
     </div>
 </template>
 
-<style scoped>
-button {
-    font-weight: bold;
-}
-</style>
+<style>
+    .analysis-dashboard{
+        height: 100%;
+        border: 1px solid red; 
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+
+    .control-panel{
+        border: 1px solid green;
+        padding: 20px;
+    }
+
+    .drop-down{
+        border: 1px blue;
+        margin-bottom: 10px;
+    }
+</style>    
