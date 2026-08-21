@@ -1,6 +1,5 @@
 <script setup>
 import { ref, watch } from "vue";
-import Select from 'primevue/select';
 
 const graph_objects = ref([]);
 const concept_nodes = ref([]);
@@ -35,34 +34,39 @@ watch(selectedGraphId, (newGraphId) => {
         })
         .catch((err) => console.error("Error fetching nodes:", err));
 });
+
+function handleClick() {
+  console.log("Button was clicked!");
+}
 </script>
 
 <template>
     <div class="analysis-dashboard">
         <div class="control-panel">
-            <div>
-                <Select 
-                    id="graph-select"
-                    class="drop-down"
-                    v-model="selectedGraphId" 
-                    :options="graph_objects" 
-                    optionLabel="name" 
-                    optionValue="graphid" 
-                    placeholder="Choose a graph..." 
-                />
-            </div>
+            <select v-model="selectedGraphId" class="drop-down">
+                <option value="" disabled>Select a resource model...</option>
+                <option 
+                    v-for="graph in graph_objects" 
+                    :key="graph.graphid" 
+                    :value="graph.graphid"
+                >
+                    {{ graph.name }}
+                </option>
+            </select>
 
-            <div v-if="selectedGraphId">
-                <Select 
-                    id="node-select"
-                    class="drop-down"
-                    v-model="selectedNode" 
-                    :options="concept_nodes" 
-                    optionLabel="name" 
-                    optionValue="nodegroup_id" 
-                    placeholder="Choose a node..." 
-                />
-            </div>
+            <select v-model="selectedNode" :disabled="!selectedGraphId" class="drop-down">
+                <option value="">Select a concept node...</option>
+                <option 
+                    v-for="node in concept_nodes" 
+                    :key="node.name" 
+                    :value="node.name"
+                >
+                    {{ node.name }}
+                </option>
+            </select>
+            <button @click="handleClick">
+                Fetch results
+            </button>
         </div>
     </div>
 </template>
@@ -79,10 +83,14 @@ watch(selectedGraphId, (newGraphId) => {
     .control-panel{
         border: 1px solid green;
         padding: 20px;
+        display: flex;
+        flex-direction: column;
     }
 
     .drop-down{
         border: 1px blue;
         margin-bottom: 10px;
+        width: 200px;
+        background-color: white;
     }
 </style>    
