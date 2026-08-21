@@ -1,12 +1,12 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.conf.urls.i18n import i18n_patterns
-from django.urls import include, path, re_path
+from django.urls import include, path, path
 from analysis.views.analysis import Analysis
 
 
 urlpatterns = [
-    re_path(r"^analysis/", Analysis.as_view(), name="analysis"),
+    path("analysis/<slug:node_id>/", Analysis.as_view(), name="analysis"),
 ]
 
 handler400 = "arches.app.views.main.custom_400"
