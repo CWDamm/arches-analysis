@@ -1,6 +1,6 @@
 # from django.utils.decorators import method_decorator
 from django.views.generic import View
-from arches.app.models.models import Value, Tile
+from arches.app.models.models import Value, Tile, Node
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
 import uuid
@@ -9,6 +9,14 @@ from collections import Counter
 class Analysis(View):
 
     def get(self, request, node_id):
+
+        try:
+            validated_node_uuid = uuid.UUID(str(node_id))
+        except (ValueError):
+            return JsonResponse({"error": "Not a valid UUID."}, status=400)
+
+        str_node_id = str(validated_node_uuid)
+        get_object_or_404(Node, pk=str_node_id)
 
         # node_id = "91eae474-c019-497a-bace-d4b7a775899a"
         tiles = Tile.objects.filter(nodegroup_id = node_id)
