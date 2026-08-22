@@ -1,10 +1,28 @@
 <script setup>
-import { ref, watch } from "vue";
+import { ref, watch, computed } from "vue";
 
 const graph_objects = ref([]);
 const concept_nodes = ref([]);
 const selectedGraphId = ref("");
 const selectedNode = ref("");
+const countsData = ref({});
+
+const totalCount = computed(() => {
+  return Object.values(countsData.value).reduce((sum, count) => sum + count, 0);
+});
+
+const tableRows = computed(() => {
+  if (totalCount.value === 0) return [];
+  
+  return Object.entries(countsData.value).map(([category, count]) => {
+    const pct = (count / totalCount.value) * 100;
+    return {
+      category,
+      count,
+      percentage: pct.toFixed(1) 
+    };
+  });
+});
 
 
 fetch("/graphs")
@@ -37,42 +55,76 @@ watch(selectedGraphId, (newGraphId) => {
 });
 
 function handleClick() {
-  console.log("Button was clicked!");
+    if (!selectedNode.value) {
+        console.warn("Please select a concept node before fetching.");
+        return;
+    }
+
+    fetch(`/analysis/${selectedNode.value}`)
+        .then((response) => {
+            if (!response.ok) throw new Error("Failed to fetch value count");
+            return response.json();
+        })
+        .then((data) => {
+            countsData.value = data;
+        })
+        .catch((err) => console.error("Error fetching value count:", err));
 }
 </script>
 
 <template>
     <div class="analysis-dashboard">
-        <div class="control-panel">
-            <select v-model="selectedGraphId" class="drop-down">
-                <option value="" disabled>Select a resource model...</option>
-                <option 
-                    v-for="graph in graph_objects" 
-                    :key="graph.graphid" 
-                    :value="graph.graphid"
-                >
-                    {{ graph.name }}
-                </option>
-            </select>
+        <div class="table-widget">
+            <div class="table-control-panel">
+                <select v-model="selectedGraphId" class="table-select">
+                    <option value="" disabled>Select a resource model...</option>
+                    <option 
+                        v-for="graph in graph_objects" 
+                        :key="graph.graphid" 
+                        :value="graph.graphid"
+                    >
+                        {{ graph.name }}
+                    </option>
+                </select>
 
-            <select v-model="selectedNode" :disabled="!selectedGraphId" class="drop-down">
-                <option value="">Select a concept node...</option>
-                <option 
-                    v-for="node in concept_nodes" 
-                    :key="node.name" 
-                    :value="node.name"
-                >
-                    {{ node.name }}
-                </option>
-            </select>
-            <button @click="handleClick">
-                Fetch results
-            </button>
+                <select v-model="selectedNode" :disabled="!selectedGraphId" class="table-select">
+                    <option value="">Select a concept node...</option>
+                    <option 
+                        v-for="node in concept_nodes" 
+                        :key="node.nodeid" 
+                        :value="node.nodeid"
+                    >
+                        {{ node.name }}
+                    </option>
+                </select>
+                <button @click="handleClick">
+                    Fetch results
+                </button>
+            </div>
+
+            <div v-if="Object.keys(countsData).length > 0" class="table-panel">
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Category</th>
+                            <th>Count</th>
+                            <th>Percent</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr v-for="row in tableRows" :key="row.category">
+                            <td>{{ row.category }}</td>
+                            <td>{{ row.count }}</td>
+                            <td>{{ row.percentage }}%</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
         </div>
     </div>
 </template>
 
-<style>
+<style scoped>
     .analysis-dashboard{
         height: 100%;
         border: 1px solid red; 
@@ -81,17 +133,33 @@ function handleClick() {
         align-items: center;
     }
 
-    .control-panel{
+    .table-control-panel{
         border: 1px solid green;
         padding: 20px;
         display: flex;
         flex-direction: column;
     }
 
-    .drop-down{
+    .table-select{
         border: 1px blue;
         margin-bottom: 10px;
-        width: 200px;
+        width: 100%;
         background-color: white;
     }
+
+    .table-panel{
+        border: 1px solid green;
+        padding: 20px;
+    }
+
+    th, td {
+        border: 1px solid #ddd;
+        padding: 8px 12px;
+        text-align: left;
+    }
+
+    th {
+        background-color: #f4f4f4;
+    }
+
 </style>    
