@@ -28,6 +28,7 @@ watch(selectedGraphId, (newGraphId) => {
             return response.json();
         })
         .then((data) => {
+            selectedNode.value = "";
             concept_nodes.value = Object.values(data).filter(
                 (node) => node["datatype"] === "concept",
             );
