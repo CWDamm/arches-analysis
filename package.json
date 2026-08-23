@@ -20,17 +20,18 @@
         "vitest": "vitest --run --coverage"
     },
     "dependencies": {
-        "arches": "archesproject/arches#dev/8.1.x"
+        "arches": "archesproject/arches#dev/8.1.x",
+        "chart.js": "^4.5.1",
+        "vue-chartjs": "^5.3.4"
     },
     "devDependencies": {
         "arches-dev-dependencies": "archesproject/arches-dev-dependencies#dev/8.1.x"
     },
-    "nodeModulesPaths": {
-    },
+    "nodeModulesPaths": {},
     "overrides": {
         "moment-timezone": "^0.5.45",
         "nomnom": "npm:@gerhobbelt/nomnom",
-        "rimraf": "^5.0.7", 
+        "rimraf": "^5.0.7",
         "underscore": "^1.13.6"
     }
 }
