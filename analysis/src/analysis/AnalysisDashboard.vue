@@ -1,11 +1,36 @@
 <script setup>
 import { ref, watch, computed } from "vue";
+import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js';
+import { Bar } from 'vue-chartjs';
 
 const graph_objects = ref([]);
 const concept_nodes = ref([]);
 const selectedGraphId = ref("");
 const selectedNode = ref("");
 const countsData = ref({});
+
+ChartJS.register(Title, Tooltip, BarElement, CategoryScale, LinearScale);
+
+const chartData = computed(() => {
+    return{
+        labels: Object.keys(countsData.value),
+        datasets: [
+            {
+            label: 'Count',
+            backgroundColor: '#42b883',
+            data: Object.values(countsData.value)
+            },
+        ]
+    }
+});
+
+const chartOptions = ref({
+    responsive: true,
+    scales: {
+        y: { beginAtZero: true }
+    },
+    indexAxis: 'y',
+});
 
 const totalCount = computed(() => {
   return Object.values(countsData.value).reduce((sum, count) => sum + count, 0);
@@ -74,8 +99,10 @@ function handleClick() {
 
 <template>
     <div class="analysis-dashboard">
-        <div class="table-widget">
-            <div class="table-control-panel">
+
+        <div class="count-widget">
+
+            <div class="count-control-panel">
                 <select v-model="selectedGraphId" class="table-select">
                     <option value="" disabled>Select a resource model...</option>
                     <option 
@@ -97,29 +124,40 @@ function handleClick() {
                         {{ node.name }}
                     </option>
                 </select>
+
                 <button @click="handleClick">
                     Fetch results
                 </button>
+
             </div>
 
-            <div v-if="Object.keys(countsData).length > 0" class="table-panel">
-                <table>
-                    <thead>
-                        <tr>
-                            <th>Category</th>
-                            <th>Count</th>
-                            <th>Percent</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr v-for="row in tableRows" :key="row.category">
-                            <td>{{ row.category }}</td>
-                            <td>{{ row.count }}</td>
-                            <td>{{ row.percentage }}%</td>
-                        </tr>
-                    </tbody>
-                </table>
+            <div class="results-container" v-if="Object.keys(countsData).length > 0" >
+            
+                <div class="table-panel">
+                    <table>
+                        <thead>
+                            <tr>
+                                <th>Category</th>
+                                <th>Count</th>
+                                <th>Percent</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr v-for="row in tableRows" :key="row.category">
+                                <td>{{ row.category }}</td>
+                                <td>{{ row.count }}</td>
+                                <td>{{ row.percentage }}%</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+
+                <div style="max-width: 600px;" class="chart-panel">
+                    <Bar :data="chartData" :options="chartOptions" />
+                </div>
+
             </div>
+
         </div>
     </div>
 </template>
@@ -133,7 +171,15 @@ function handleClick() {
         align-items: center;
     }
 
-    .table-control-panel{
+    .results-container{
+        border:1px solid blue;
+    }
+
+    .chart-panel{
+        border: 1px solid green;
+    }
+
+    .count-control-panel{
         border: 1px solid green;
         padding: 20px;
         display: flex;
