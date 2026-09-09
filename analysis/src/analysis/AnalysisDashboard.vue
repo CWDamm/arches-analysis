@@ -1,5 +1,5 @@
 <script setup>
-import { ref, watch, computed } from "vue";
+import { ref, watch, computed, onMounted } from "vue";
 import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js';
 import { Bar } from 'vue-chartjs';
 
@@ -8,6 +8,7 @@ const concept_nodes = ref([]);
 const selectedGraphId = ref("");
 const selectedNode = ref("");
 const countsData = ref({});
+const isLoadingGraphs = ref(false);
 
 ChartJS.register(Title, Tooltip, BarElement, CategoryScale, LinearScale);
 
@@ -49,18 +50,26 @@ const tableRows = computed(() => {
   });
 });
 
-
-fetch("/graphs")
-    .then((response) => {
+async function fetchGraphs() {
+    isLoadingGraphs.value = true;
+    try {
+        const response = await fetch("/graphs");
         if (!response.ok) throw new Error("Failed to fetch graphs");
-        return response.json();
-    })
-    .then((data) => {
+        
+        const data = await response.json();
         graph_objects.value = data.filter(
-            (graph) => graph.graphid != "ff623370-fa12-11e6-b98b-6c4008b05c4c",
+            (graph) => graph.graphid !== "ff623370-fa12-11e6-b98b-6c4008b05c4c"
         );
-    })
-    .catch((err) => console.error(err));
+    } catch (err) {
+        console.error("Error fetching graphs:", err);
+    } finally {
+        isLoadingGraphs.value = false;
+    }
+}
+
+onMounted(() => {
+    fetchGraphs();
+});
 
 watch(selectedGraphId, (newGraphId) => {
     if (!newGraphId) return;
