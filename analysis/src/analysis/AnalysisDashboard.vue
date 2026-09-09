@@ -98,38 +98,37 @@ function handleClick() {
 </script>
 
 <template>
+
     <div class="analysis-dashboard">
 
-        <div class="count-widget">
+        <div class="count-control-panel">
+            <select v-model="selectedGraphId" class="table-select">
+                <option value="" disabled>Select a resource model...</option>
+                <option 
+                    v-for="graph in graph_objects" 
+                    :key="graph.graphid" 
+                    :value="graph.graphid"
+                >
+                    {{ graph.name }}
+                </option>
+            </select>
 
-            <div class="count-control-panel">
-                <select v-model="selectedGraphId" class="table-select">
-                    <option value="" disabled>Select a resource model...</option>
-                    <option 
-                        v-for="graph in graph_objects" 
-                        :key="graph.graphid" 
-                        :value="graph.graphid"
-                    >
-                        {{ graph.name }}
-                    </option>
-                </select>
+            <select v-model="selectedNode" :disabled="!selectedGraphId" class="table-select">
+                <option value="">Select a concept node...</option>
+                <option 
+                    v-for="node in concept_nodes" 
+                    :key="node.nodeid" 
+                    :value="node.nodeid"
+                >
+                    {{ node.name }}
+                </option>
+            </select>
 
-                <select v-model="selectedNode" :disabled="!selectedGraphId" class="table-select">
-                    <option value="">Select a concept node...</option>
-                    <option 
-                        v-for="node in concept_nodes" 
-                        :key="node.nodeid" 
-                        :value="node.nodeid"
-                    >
-                        {{ node.name }}
-                    </option>
-                </select>
+            <button @click="handleClick">
+                Fetch results
+            </button>
 
-                <button @click="handleClick">
-                    Fetch results
-                </button>
-
-            </div>
+        </div>
 
             <div class="results-container" v-if="Object.keys(countsData).length > 0" >
             
@@ -158,44 +157,65 @@ function handleClick() {
 
             </div>
 
-        </div>
     </div>
+
 </template>
 
 <style scoped>
     .analysis-dashboard{
         height: 100%;
-        border: 1px solid red; 
         display: flex;
-        justify-content: center;
+        justify-content: start;
         align-items: center;
-    }
-
-    .results-container{
-        border:1px solid blue;
-    }
-
-    .chart-panel{
-        border: 1px solid green;
-    }
-
-    .count-control-panel{
-        border: 1px solid green;
-        padding: 20px;
-        display: flex;
         flex-direction: column;
     }
 
-    .table-select{
-        border: 1px blue;
-        margin-bottom: 10px;
+    .count-control-panel{
+        border: 1px solid grey;
+        padding: 20px;
+        display: flex;
+        flex-direction: row;
         width: 100%;
+        justify-content: start;
+        background-color: #fafaf9;
+    }
+
+    .count-control-panel select{
+        border: 1px solid grey;
+        width: 250px;
+        height: 30px;
         background-color: white;
+        margin-right: 25px;
+    }
+
+    .count-control-panel select:focus-visible {
+        outline: none !important;
+        border-color: grey;
+    }
+
+    .count-control-panel select:focus {
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+    .results-container{
+        border: 1px solid lightgrey;
+        display: flex;
+        flex-direction: row;
+        padding: 30px;
+    }
+
+    .chart-panel{
+        border: 1px solid lightgrey;
+        padding: 15px;
+        background-color: #fafaf9;
     }
 
     .table-panel{
-        border: 1px solid green;
+        border: 1px solid lightgrey;
         padding: 20px;
+        margin-right: 40px;
+        background-color: #fafaf9;
     }
 
     th, td {
