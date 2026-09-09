@@ -75,6 +75,7 @@ watch(selectedGraphId, (newGraphId) => {
 
     selectedNode.value = "";
     concept_nodes.value = [];
+    countsData.value = {}
 
     if (!newGraphId) return;
 
