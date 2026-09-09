@@ -72,6 +72,10 @@ onMounted(() => {
 });
 
 watch(selectedGraphId, (newGraphId) => {
+    
+    selectedNode.value = "";
+    concept_nodes.value = [];
+
     if (!newGraphId) return;
 
     fetch(`/graph/${newGraphId}/nodes`)
