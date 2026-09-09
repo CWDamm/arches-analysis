@@ -93,22 +93,24 @@ watch(selectedGraphId, (newGraphId) => {
         .catch((err) => console.error("Error fetching nodes:", err));
 });
 
-function handleClick() {
-    if (!selectedNode.value) {
-        console.warn("Please select a concept node before fetching.");
-        return;
-    }
+watch(selectedNode, () => {
 
-    fetch(`/analysis/${selectedNode.value}`)
-        .then((response) => {
-            if (!response.ok) throw new Error("Failed to fetch value count");
-            return response.json();
-        })
-        .then((data) => {
-            countsData.value = data;
-        })
-        .catch((err) => console.error("Error fetching value count:", err));
-}
+        if (!selectedNode.value) {
+            console.warn("Please select a concept node before fetching.");
+            return;
+        }
+
+        fetch(`/analysis/${selectedNode.value}`)
+            .then((response) => {
+                if (!response.ok) throw new Error("Failed to fetch value count");
+                return response.json();
+            })
+            .then((data) => {
+                countsData.value = data;
+            })
+            .catch((err) => console.error("Error fetching value count:", err));
+    }
+)
 </script>
 
 <template>
@@ -137,10 +139,6 @@ function handleClick() {
                     {{ node.name }}
                 </option>
             </select>
-
-            <button @click="handleClick">
-                Fetch results
-            </button>
 
         </div>
 
