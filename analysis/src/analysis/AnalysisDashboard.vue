@@ -72,7 +72,7 @@ onMounted(() => {
 });
 
 watch(selectedGraphId, (newGraphId) => {
-    
+
     selectedNode.value = "";
     concept_nodes.value = [];
 
@@ -115,7 +115,7 @@ function handleClick() {
     <div class="analysis-dashboard">
 
         <div class="count-control-panel">
-            <select v-model="selectedGraphId" class="table-select">
+            <select v-model="selectedGraphId" :disabled="isLoadingGraphs" class="table-select">
                 <option value="" disabled>Select a resource model...</option>
                 <option 
                     v-for="graph in graph_objects" 
