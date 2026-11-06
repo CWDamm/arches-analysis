@@ -1,6 +1,6 @@
 <script setup>
 import { ref, watch, computed, onMounted } from "vue";
-import { Chart as ChartJS, Title, Tooltip, Legend, BarElement, CategoryScale, LinearScale } from 'chart.js';
+import { Chart as ChartJS, Title, Tooltip, BarElement, CategoryScale, LinearScale } from 'chart.js';
 import { Bar } from 'vue-chartjs';
 
 const graph_objects = ref([]);
@@ -22,7 +22,7 @@ const chartData = computed(() => {
             data: Object.values(countsData.value)
             },
         ]
-    }
+    };
 });
 
 const chartOptions = ref({
@@ -75,7 +75,7 @@ watch(selectedGraphId, (newGraphId) => {
 
     selectedNode.value = "";
     concept_nodes.value = [];
-    countsData.value = {}
+    countsData.value = {};
 
     if (!newGraphId) return;
 
@@ -110,7 +110,7 @@ watch(selectedNode, () => {
             })
             .catch((err) => console.error("Error fetching value count:", err));
     }
-)
+);
 </script>
 
 <template>
@@ -142,7 +142,7 @@ watch(selectedNode, () => {
 
         </div>
 
-            <div class="results-container" v-if="Object.keys(countsData).length > 0" >
+            <div v-if="Object.keys(countsData).length > 0" class="results-container">
             
                 <div class="table-panel">
                     <table>
