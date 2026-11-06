@@ -18,12 +18,12 @@
         "vitest": "vitest --run --coverage"
     },
     "dependencies": {
-        "arches": "archesproject/arches#stable/7.6.26",
+        "arches": "archesproject/arches#stable/7.6.28",
         "chart.js": "^4.5.1",
         "vue-chartjs": "^5.3.4"
     },
     "devDependencies": {
-        "arches-dev-dependencies": "archesproject/arches-dev-dependencies#stable/7.6.26"
+        "arches-dev-dependencies": "archesproject/arches-dev-dependencies#stable/7.6.28"
     },
     "nodeModulesPaths": {},
     "overrides": {
