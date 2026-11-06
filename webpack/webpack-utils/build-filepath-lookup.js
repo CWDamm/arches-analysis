@@ -28,17 +28,17 @@ function buildFilepathLookup(path, staticUrlPrefix) {
 
     return getFileList(path).reduce((lookup, file) => {
         // Ignore dotfiles
-        if (Path.basename(file).startsWith('.')) {
+        if (file.match(new RegExp(Path.sep + '\\.')) || file.match(/^\./)) {
             return lookup;
         }
         const extension = file.match(/[^.]+$/).toString();
         const extensionReplacementRegex = new RegExp(`\\.${extension}$`);
 
         if (extension === 'js') {
-            lookup[file.replace(path,'').replace(/\\/g, '/').replace(extensionReplacementRegex,'').replace(/^\//,'')] = {"import": file, "filename": `${prefix}/[name].[contenthash].${extension}`};
+            lookup[file.replace(path,'').replace(/\\/g, '/').replace(extensionReplacementRegex,'').replace(/^\//,'')] = {"import": file, "filename": `${prefix}/[name].${extension}`};
         }
         else if (extension === 'css' || extension === 'scss') {
-            lookup[Path.join('css', file.replace(path,'')).replace(/\\/g, '/').replace(extensionReplacementRegex,'').replace(/^\//,'')] = {'import': file, "filename": `${prefix}/[name].[contenthash].${extension}`};
+            lookup[Path.join('css', file.replace(path,'')).replace(/\\/g, '/').replace(extensionReplacementRegex,'').replace(/^\//,'')] = { 'import': file };
         }
         else {
             // staticUrl used for images

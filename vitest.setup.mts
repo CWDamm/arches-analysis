@@ -1,4 +1,6 @@
 import { beforeAll, vi } from 'vitest';
+import '@/analysis/declarations.d.ts';
+
 
 beforeAll(() => {
     vi.mock('arches', () => ({

@@ -1,18 +1,12 @@
 from django.conf import settings
 from django.conf.urls.static import static
 from django.conf.urls.i18n import i18n_patterns
-from django.urls import include, path, path
+from django.urls import include, path
 from analysis.views.analysis import Analysis
-
 
 urlpatterns = [
     path("analysis/<slug:node_id>/", Analysis.as_view(), name="analysis"),
 ]
-
-handler400 = "arches.app.views.main.custom_400"
-handler403 = "arches.app.views.main.custom_403"
-handler404 = "arches.app.views.main.custom_404"
-handler500 = "arches.app.views.main.custom_500"
 
 # Ensure Arches core urls are superseded by project-level urls
 urlpatterns.append(path('', include('arches.urls')))

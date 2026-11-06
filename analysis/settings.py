@@ -13,10 +13,9 @@ try:
 except ImportError:
     pass
 
-APP_NAME = "analysis"
+APP_NAME = 'analysis'
 APP_VERSION = semantic_version.Version(major=1, minor=0, patch=0)
-MIN_ARCHES_VERSION = semantic_version.Version(major=8, minor=0, patch=0)
-MAX_ARCHES_VERSION = semantic_version.Version(major=8, minor=1, patch=8)
+APP_ROOT = os.path.dirname(os.path.abspath(inspect.getfile(inspect.currentframe())))
 
 WEBPACK_LOADER = {
     "DEFAULT": {
@@ -107,9 +106,7 @@ DATABASES = {
         "ENGINE": "django.contrib.gis.db.backends.postgis",
         "HOST": "localhost",
         "NAME": "analysis",
-        "OPTIONS": {
-            "options": "-c cursor_tuple_fraction=1",
-        },
+        "OPTIONS": {},
         "PASSWORD": "postgis",
         "PORT": "5432",
         "POSTGIS_TEMPLATE": "template_postgis",
@@ -128,6 +125,7 @@ SEARCH_THUMBNAILS = False
 
 INSTALLED_APPS = (
     "webpack_loader",
+    "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
     "django.contrib.sessions",
@@ -139,23 +137,18 @@ INSTALLED_APPS = (
     "arches.app.models",
     "arches.management",
     "guardian",
-    "django_recaptcha",
+    "captcha",
     "revproxy",
     "corsheaders",
     "oauth2_provider",
     "django_celery_results",
-    "django_migrate_sql",
-    "pgtrigger",
     # "silk",
     "analysis",  # Ensure the project is listed before any other arches applications
 )
 
 # Placing this last ensures any templates provided by Arches Applications
 # take precedence over core arches templates in arches/app/templates.
-INSTALLED_APPS += (
-    "arches.app",
-    "django.contrib.admin",
-)
+INSTALLED_APPS += ("arches.app",)
 
 MIDDLEWARE = [
     "corsheaders.middleware.CorsMiddleware",
@@ -245,16 +238,16 @@ LOGGING = {
             'level': 'WARNING',
             'propagate': True
         },
-        "analysis": {
-            "handlers": ["file", "console"],
-            "level": "WARNING",
-            "propagate": True,
+        'analysis': {
+            'handlers': ['file', 'console'],
+            'level': 'WARNING',
+            'propagate': True
         },
-        "django.request": {
-            "handlers": ["file", "console"],
-            "level": "WARNING",
-            "propagate": True,
-        },
+        'django.request': {
+            'handlers': ['file', 'console'],
+            'level': 'WARNING',
+            'propagate': True
+        }
     }
 }
 
