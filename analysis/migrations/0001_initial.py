@@ -6,6 +6,7 @@ class Migration(migrations.Migration):
     initial = True
 
     dependencies = [
+        ("models", "11499_add_editlog_resourceinstance_idx"),
     ]
 
     forward = """
